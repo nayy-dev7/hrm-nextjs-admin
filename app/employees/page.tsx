@@ -32,63 +32,59 @@ export default function EmployeesPage() {
 
   // Fetch Data Pegawai
   useEffect(() => {
-  const fetchEmployees = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/employees`);
+    const fetchEmployees = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/employees`);
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        setEmployees(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
+        console.warn("Koneksi Laravel lambat/mati. Mengambil data dari localStorage atau data simulasi.");
+
+        // Ambil dari localStorage terlebih dahulu agar hasil edit tersimpan
+        const localData = localStorage.getItem("mock_employees");
+        if (localData) {
+          setEmployees(JSON.parse(localData));
+        } else {
+          const defaultMock = [
+            { id: 1, nip: "202601001", nama: "Rina Amelia", email: "rina@company.com", divisi: "UI/UX Designer", phone: "081234567890", alamat: "Jl. Pemuda No. 12", role: "employee", join_date: "2026-01-10" },
+            { id: 2, nip: "202601002", nama: "Budi Santoso", email: "budi@company.com", divisi: "Software Engineer", phone: "087654321098", alamat: "Jl. Merdeka No. 45", role: "employee", join_date: "2026-02-15" },
+            { id: 3, nip: "202601003", nama: "Salsa Putri", email: "salsa@company.com", divisi: "HR Department", phone: "089988776655", alamat: "Jl. Diponegoro No. 8", role: "hr", join_date: "2026-03-01" },
+          ];
+          localStorage.setItem("mock_employees", JSON.stringify(defaultMock));
+          setEmployees(defaultMock);
+        }
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const data = await res.json();
+    fetchEmployees();
+  }, []);
 
-      setEmployees(Array.isArray(data) ? data : []);
+  // Handler Hapus Data Pegawai
+  const handleDelete = async (id: number, nama: string) => {
+    const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus pegawai "${nama}"?`);
+    if (!confirmDelete) return;
+
+    const updatedEmployees = employees.filter((emp) => emp.id !== id);
+    setEmployees(updatedEmployees);
+    localStorage.setItem("mock_employees", JSON.stringify(updatedEmployees)); // Simpan perubahan ke local storage
+
+    try {
+      await fetch(`${BASE_URL}/employees/${id}`, {
+        method: "DELETE",
+      });
     } catch (err) {
-      console.error(err);
-      console.warn("Koneksi Laravel lambat/mati. Langsung beralih ke data simulasi.");
-
-      setEmployees([
-        {
-          id: 1,
-          nip: "202601001",
-          nama: "Rina Amelia",
-          email: "rina@company.com",
-          divisi: "UI/UX Designer",
-          phone: "081234567890",
-          alamat: "Jl. Pemuda No. 12",
-          role: "employee",
-          join_date: "2026-01-10",
-        },
-        {
-          id: 2,
-          nip: "202601002",
-          nama: "Budi Santoso",
-          email: "budi@company.com",
-          divisi: "Software Engineer",
-          phone: "087654321098",
-          alamat: "Jl. Merdeka No. 45",
-          role: "employee",
-          join_date: "2026-02-15",
-        },
-        {
-          id: 3,
-          nip: "202601003",
-          nama: "Salsa Putri",
-          email: "salsa@company.com",
-          divisi: "HR Department",
-          phone: "089988776655",
-          alamat: "Jl. Diponegoro No. 8",
-          role: "hr",
-          join_date: "2026-03-01",
-        },
-      ]);
-    } finally {
-      setLoading(false);
+      console.warn("Backend terputus, data simulasi berhasil dihapus dari view lokal.");
     }
   };
 
-  fetchEmployees();
-}, []);
   // Filter pencarian berdasarkan nama atau NIP
   const filteredEmployees = employees.filter(
     (emp) =>
@@ -127,11 +123,8 @@ export default function EmployeesPage() {
             <p className="text-xs text-gray-500 mt-0.5">Total Terdaftar: {employees.length} Orang</p>
           </div>
           
-          {/* SEARCH BAR */}
-          <div className="relative">
-            <Link href="/employees/create" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-sm font-semibold transition">
-              + Tambah Pegawai
-            </Link>
+          {/* SEARCH BAR & BUTTON */}
+          <div className="flex items-center gap-3">
             <input
               type="text"
               placeholder="Cari nama atau NIP..."
@@ -139,10 +132,13 @@ export default function EmployeesPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-[#1f2235] border border-gray-800 text-sm rounded-xl px-4 py-2 w-full sm:w-64 focus:outline-none focus:border-blue-500 text-white transition"
             />
+            <Link href="/employees/create" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-sm font-semibold transition whitespace-nowrap">
+              + Tambah Pegawai
+            </Link>
           </div>
         </div>
 
-        {/* TABLE CONTAINER (Gaya Dark Mode Elegan) */}
+        {/* TABLE CONTAINER */}
         <div className="bg-[#1f2235] rounded-[24px] border border-gray-800/60 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
@@ -154,6 +150,7 @@ export default function EmployeesPage() {
                   <th className="py-4 px-6">Divisi</th>
                   <th className="py-4 px-6">Role</th>
                   <th className="py-4 px-6">Join Date</th>
+                  <th className="py-4 px-6 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50">
@@ -177,11 +174,28 @@ export default function EmployeesPage() {
                         </span>
                       </td>
                       <td className="py-4 px-6 text-xs text-gray-400 font-medium">{emp.join_date || "-"}</td>
+                      
+                      <td className="py-4 px-6">
+                        <div className="flex items-center justify-center gap-2">
+                          <Link 
+                            href={`/employees/edit/${emp.id}`}
+                            className="px-2.5 py-1.5 bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg text-xs font-semibold border border-amber-500/30 transition"
+                          >
+                            ✏️ Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(emp.id, emp.nama)}
+                            className="px-2.5 py-1.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-xs font-semibold border border-red-500/30 transition"
+                          >
+                            🗑️ Hapus
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="text-center py-10 text-gray-500 font-medium">Pegawai tidak ditemukan.</td>
+                    <td colSpan={7} className="text-center py-10 text-gray-500 font-medium">Pegawai tidak ditemukan.</td>
                   </tr>
                 )}
               </tbody>

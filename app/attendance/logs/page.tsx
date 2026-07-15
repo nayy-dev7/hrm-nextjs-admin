@@ -73,6 +73,7 @@ setLogs(Array.isArray(data) ? data : []);
           <Link href="/leaves" className="text-gray-500 text-lg hover:text-white transition" title="Approval Cuti">✔️</Link>
           <Link href="/payroll" className="text-gray-500 text-lg hover:text-white transition" title="Laporan Gaji">💵</Link>
         </div>
+        <button onClick={() => { localStorage.removeItem("isLoggedIn"); router.push("/login"); }} className="text-gray-500 hover:text-red-500 text-lg">🚪</button>
       </aside>
 
       {/* MAIN CONTENT */}
