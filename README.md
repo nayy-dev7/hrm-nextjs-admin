@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Human Resource Management (HRM) - Admin Dashboard
 
-## Getting Started
+A web-based Human Resource Management (HRM) admin dashboard developed as a Project-Based Learning (PBL) project at Politeknik Negeri Malang.
 
-First, run the development server:
+This application is used by Human Resources (HR) to manage employee attendance, leave requests, payroll information, and employee data through a centralized dashboard.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Laravel REST API
+- MySQL
+- Git
+- GitHub
+
+---
+
+## Features
+
+- Dashboard
+- Employee Management
+- Attendance Monitoring
+- Attendance Logs
+- Leave Request Management
+- Payroll Overview
+- Authentication
+- Responsive User Interface
+
+---
+
+## My Contribution
+
+- Participated in the development and maintenance of the HRM system as a Flutter Mobile Developer and Laravel REST API Developer.
+- Collaborated with team members during integration and testing of the admin dashboard with the backend services.
+- Contributed to project debugging, API integration, and version control using Git and GitHub.
+
+---
+
+## Screenshots
+
+> Screenshots will be added soon.
+
+---
+
+## Project Structure
+
+```text
+app/
+components/
+lib/
+public/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Related Repositories
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- HRM Mobile (Flutter)
+- HRM Backend (Laravel REST API)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Academic Project
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Project-Based Learning (PBL)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Diploma III Information Management
 
-## Deploy on Vercel
+Politeknik Negeri Malang
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2026
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Disclaimer
+
+This repository was developed as part of an academic team project.
+The source code is shared for portfolio and learning purposes only.
